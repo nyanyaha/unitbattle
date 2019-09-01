@@ -36,10 +36,10 @@ contract UnitFactory
 	}
 
 	// ユニット生成
-	function _createUnit(string memory _code) internal
+	function createUnit(string memory _code) public
 	{
 		// 所持確認
-		require(_isExistUnit());
+		require(!_isExistUnit());
 
 		// 初期文字のハッシュ値から初期パワー計算
 		uint rand = uint(keccak256(bytes(_code)));
@@ -72,5 +72,16 @@ contract UnitFactory
 	{
 		// storageの削除は大変なようなのでアドレスだけクリア(Unit自体は残る)
 		unitToOwner[_unitid] = address(0x0);
+	}
+
+	// ユニット数取得
+	function getUnitNum() external returns(uint)
+	{
+		return units.length;
+	}
+
+	function getUnitAddr(uint _unitid) external returns(address)
+	{
+		return unitToOwner[_unitid];
 	}
 }
