@@ -1,6 +1,6 @@
 # battle
 
-##version
+## version
 solidity ^0.5.8
 Truffle v5.0.34
 
