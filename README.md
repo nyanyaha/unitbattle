@@ -1,5 +1,9 @@
 # battle
 
+##version
+solidity ^0.5.8
+Truffle v5.0.34
+
 > A Vue.js project
 
 ## Build Setup
