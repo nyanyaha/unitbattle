@@ -16,13 +16,14 @@
       <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
     </ul>
+	<button @click="createUnit">ボタン！</button>
   </div>
 </template>
 
 <script>
-import web3 from 'web3'
+import Web3 from 'web3'
 import contract from 'truffle-contract'
-import artifacts from '../../build/contracts/UnitFactory.json'
+import artifacts from '../build/contracts/UnitFactory.json'
 const UnitFactory = contract(artifacts)
 export default {
   name: 'app',
@@ -30,11 +31,10 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
-  }
-},
-created() {
+  },
+
+  created() {
 	if (typeof web3 !== 'undefined') {
-		// $B=i4|@_Dj(B
 		web3 = new Web3(web3.currentProvider)
 	} else {
 		console.warn("No web3 detected. Falling back to http://127.0.0.1:7545. You should remove this fallback when you deploy live, as it's inherently insecure. Consider switching to Metamask for development. More info here: http://truffleframework.com/tutorials/truffle-and-metamask")
@@ -42,7 +42,6 @@ created() {
 	}
 
 	UnitFactory.setProvider(web3.currentProvider)
-	// $B%"%+%&%s%H@_Dj(B
 	web3.eth.getAccounts((error, accounts) => {
 		if (error != null) {
 			console.error(error)
@@ -54,7 +53,24 @@ created() {
 			return
 		}
 		this.account = accounts[0]
+
+		UnitFactory.deployed()
+			.then((instance) => {
+				instance.createUnit("test")
+					.then(() => this.message = "test")
+			})
 	})
+  },
+
+  methods: {
+	  createUnit () {
+		  return UnitFactory.deployed()
+		  	.then((instance) => {
+				instance.createUnit("test")
+					.then(() => this.message = "test")
+			})
+	  }
+  }
 }
 </script>
 
