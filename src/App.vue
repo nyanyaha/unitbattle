@@ -41,6 +41,7 @@ export default {
 		web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:7545'))
 	}
 
+	ethereum.enable()
 	UnitFactory.setProvider(web3.currentProvider)
 	web3.eth.getAccounts((error, accounts) => {
 		if (error != null) {
@@ -49,13 +50,16 @@ export default {
 			return
 		}
 		if (accounts.length === 0) {
+			console.error("accounts none")
 			this.message = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 			return
 		}
 		this.account = accounts[0]
+		//web3.eth.defaultAccount = accounts[0]
 
 		UnitFactory.deployed()
 			.then((instance) => {
+				console.error(instance)
 				instance.createUnit("test")
 					.then(() => this.message = "test")
 			})
@@ -66,8 +70,10 @@ export default {
 	  createUnit () {
 		  return UnitFactory.deployed()
 		  	.then((instance) => {
-				instance.createUnit("test")
-					.then(() => this.message = "test")
+				//instance.createUnit("test")
+				//instance.getUnitNum()
+				instance.test()
+					.then(() => this.msg = "test")
 			})
 	  }
   }

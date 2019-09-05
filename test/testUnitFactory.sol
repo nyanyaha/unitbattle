@@ -21,7 +21,7 @@ contract TestUnitFactory
 		}
 
 		//result = uint(unitFactory.getUnitAddr(0));
-		//result = unitFactory.getUnitNum();
+		result = unitFactory.getUnitNum();
 
 		Assert.equal(100, result, "unit create test.");
 	}

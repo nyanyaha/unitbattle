@@ -84,4 +84,8 @@ contract UnitFactory
 	{
 		return unitToOwner[_unitid];
 	}
+
+	function test() public 
+	{
+	}
 }
