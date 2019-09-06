@@ -29,11 +29,14 @@ export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Welcome to Your Vue.js App',
+	  account : null
     }
   },
 
+  // 初期化処理
   created() {
+	// web3が有効か確認する
 	if (typeof web3 !== 'undefined') {
 		web3 = new Web3(web3.currentProvider)
 	} else {
@@ -41,7 +44,8 @@ export default {
 		web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:7545'))
 	}
 
-	ethereum.enable()
+	//await ethereum.enable()
+	web3.currentProvider.enable()
 	UnitFactory.setProvider(web3.currentProvider)
 	web3.eth.getAccounts((error, accounts) => {
 		if (error != null) {
@@ -55,13 +59,14 @@ export default {
 			return
 		}
 		this.account = accounts[0]
-		//web3.eth.defaultAccount = accounts[0]
+		web3.eth.defaultAccount = this.account
 
 		UnitFactory.deployed()
 			.then((instance) => {
-				console.error(instance)
-				instance.createUnit("test")
-					.then(() => this.message = "test")
+				//console.error(instance)
+				//instance.createUnit("test",{from:this.account})
+				instance.getUnitNum({from:this.account})
+					.then(() => this.msg = "create")
 			})
 	})
   },
@@ -71,9 +76,12 @@ export default {
 		  return UnitFactory.deployed()
 		  	.then((instance) => {
 				//instance.createUnit("test")
-				//instance.getUnitNum()
-				instance.test()
-					.then(() => this.msg = "test")
+				instance.getUnitNum({from:this.account})
+				//instance.test()
+					.then((num) => {
+						this.msg = "test"
+						console.log(num)
+					})
 			})
 	  }
   }
