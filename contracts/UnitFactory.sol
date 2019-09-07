@@ -47,7 +47,7 @@ contract UnitFactory
 		uint32 pow = uint32(rand % DEFAULT_POWER_MAX);
 
 		// ユニット作成
-		uint id = units.push(Unit(pow, 1/*level*/));
+		uint id = units.push(Unit(pow, 1/*level*/)) - 1;
 		unitToOwner[id] = msg.sender;
 
 		// イベントログ
