@@ -12,9 +12,10 @@
 	<button @click="createUnit">召喚！</button>
 	<p>Power:{{power}} Level:{{level}}</p>
 	<button @click="getUnit">getUnit</button>
-	<button @click="getUnitid">getUnitid</button>
+	<button @click="getUnitIdByOwner">getUnitIdByOwner</button>
 	<button @click="getUnitnum">getUnitnum</button>
 	<button @click="getUnitOwner">getUnitOwner</button>
+	<button @click="resetUnit">resetUnit</button>
   </div>
 </template>
 
@@ -88,14 +89,13 @@ export default {
 
 		  return UnitFactory.deployed()
 		  	.then((instance) => {
-				//instance.getUnitNum({from:this.account})
-				console.log(instance)
 				instance.createUnit(this.magic_word, {from:this.account})
-					.then((unitid) => {
-						this.unitid = unitid
+					.then(() => {
 						this.msg = "召喚成功！"
-						console.log(this.unitid)
-						this.getUnit()
+						this.getUnitIdByOwner()
+							.then(() => {
+								this.getUnit()
+							})
 					})
 			})
 	  },
@@ -106,7 +106,7 @@ export default {
 
 		  return UnitFactory.deployed()
 		  	.then((instance) => {
-				instance.units(0)
+				instance.units(this.unitid)
 					.then((unit) => {
 						console.log("getUnit success")
 						this.power= unit.power
@@ -115,13 +115,17 @@ export default {
 			})
 	  },
 
-	  getUnitid () {
+	  // アドレスの保持しているユニットのIDを取得
+	  getUnitIdByOwner () {
 		  return UnitFactory.deployed()
 		  	.then((instance) => {
 				console.log(this.account)
 				instance.getUnitIdByOwner(this.account, {from:this.account})
 					.then((ids) => {
-						console.log(ids.toNumber)
+						if (ids.length > 0) {
+							console.log(ids[0].toNumber())
+							this.unitid = ids[0].toNumber() 
+						}
 					})
 			})
 	  },
@@ -142,6 +146,17 @@ export default {
 				instance.unitToOwner(0)
 					.then((unit) => {
 						console.log(unit)
+					})
+			})
+	  },
+
+	  resetUnit () {
+		  return UnitFactory.deployed()
+		  	.then((instance) => {
+				instance.resetUnit(this.unitid, {from:this.account})
+					.then(() => {
+						this.unitid = null
+						console.log("reset success")
 					})
 			})
 	  }
