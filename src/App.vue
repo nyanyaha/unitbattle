@@ -1,22 +1,20 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
     <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
     <ul>
       <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
       <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
       <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
       <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
     </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
-	<button @click="createUnit">ボタン！</button>
+    <h1>好きな呪文を入力してユニットを召喚</h1>
+	<input v-model="magic_word" type="text" name="" value="" placeholder="魔法の言葉を入力せよ">
+	<button @click="createUnit">召喚！</button>
+	<p>Power:{{power}} Level:{{level}}</p>
+	<button @click="getUnit">getUnit</button>
+	<button @click="getUnitid">getUnitid</button>
+	<button @click="getUnitnum">getUnitnum</button>
+	<button @click="getUnitOwner">getUnitOwner</button>
   </div>
 </template>
 
@@ -30,7 +28,11 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-	  account : null
+	  account : null,
+	  unitid : null,
+  	  magic_word : null,
+	  power : 0,
+	  level : 0
     }
   },
 
@@ -46,41 +48,100 @@ export default {
 
 	//await ethereum.enable()
 	web3.currentProvider.enable()
-	UnitFactory.setProvider(web3.currentProvider)
-	web3.eth.getAccounts((error, accounts) => {
-		if (error != null) {
-			console.error(error)
-			this.message = 'There was an error fetching your accounts. Do you have Metamask, Mist installed or an Ethereum node running? If not, you might want to look into that.'
-			return
-		}
-		if (accounts.length === 0) {
-			console.error("accounts none")
-			this.message = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
-			return
-		}
-		this.account = accounts[0]
-		web3.eth.defaultAccount = this.account
+		.then(() => {
+			UnitFactory.setProvider(web3.currentProvider)
+			// 使用するアカウント情報取得
+			web3.eth.getAccounts((error, accounts) => {
+				if (error != null) {
+					console.error(error)
+					this.message = 'There was an error fetching your accounts. Do you have Metamask, Mist installed or an Ethereum node running? If not, you might want to look into that.'
+					return
+				}
+				if (accounts.length === 0) {
+					console.error("accounts none")
+					this.message = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
+					return
+				}
+				this.account = accounts[0]
+				web3.eth.defaultAccount = this.account
 
-		UnitFactory.deployed()
-			.then((instance) => {
-				//console.error(instance)
-				//instance.createUnit("test",{from:this.account})
-				instance.getUnitNum({from:this.account})
-					.then(() => this.msg = "create")
+				//UnitFactory.deployed()
+				//	.then((instance) => {
+						//console.error(instance)
+						//instance.createUnit("test",{from:this.account})
+				//		instance.getUnitNum()
+				//			.then(() => this.msg = "create")
+				//	})
 			})
-	})
+		})
   },
 
   methods: {
+	  // ユニット生成
 	  createUnit () {
+		  if (this.magic_word == null) return
+
+		  // 作成済み
+		  if (this.unitid != null) {
+			  return this.getUnit()
+		  }
+
 		  return UnitFactory.deployed()
 		  	.then((instance) => {
-				//instance.createUnit("test")
+				//instance.getUnitNum({from:this.account})
+				console.log(instance)
+				instance.createUnit(this.magic_word, {from:this.account})
+					.then((unitid) => {
+						this.unitid = unitid
+						this.msg = "召喚成功！"
+						console.log(this.unitid)
+						this.getUnit()
+					})
+			})
+	  },
+
+	  // ユニット取得
+	  getUnit () {
+		  if (this.unitid == null) return
+
+		  return UnitFactory.deployed()
+		  	.then((instance) => {
+				instance.units(0)
+					.then((unit) => {
+						console.log("getUnit success")
+						this.power= unit.power
+						this.level= unit.level
+					})
+			})
+	  },
+
+	  getUnitid () {
+		  return UnitFactory.deployed()
+		  	.then((instance) => {
+				console.log(this.account)
+				instance.getUnitIdByOwner(this.account, {from:this.account})
+					.then((ids) => {
+						console.log(ids.toNumber)
+					})
+			})
+	  },
+
+	  getUnitnum () {
+		  return UnitFactory.deployed()
+		  	.then((instance) => {
 				instance.getUnitNum({from:this.account})
-				//instance.test()
 					.then((num) => {
-						this.msg = "test"
-						console.log(num)
+						console.log(num.toNumber())
+					})
+			})
+	  },
+
+	  getUnitOwner () {
+		  return UnitFactory.deployed()
+		  	.then((instance) => {
+				instance.unitToOwner(0)
+					.then((unit) => {
+						console.log(unit)
 					})
 			})
 	  }

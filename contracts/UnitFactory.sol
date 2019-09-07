@@ -15,6 +15,7 @@ contract UnitFactory
 
 	mapping (uint => address) public unitToOwner;
 
+	event CreateUnit(address addr, uint unitid, string code, uint32 power);
 
 	modifier onlyOwnerOf(uint _unitid)
 	{
@@ -36,7 +37,7 @@ contract UnitFactory
 	}
 
 	// ユニット生成
-	function createUnit(string memory _code) public
+	function createUnit(string memory _code) public returns(uint)
 	{
 		// 所持確認
 		require(!_isExistUnit());
@@ -48,6 +49,11 @@ contract UnitFactory
 		// ユニット作成
 		uint id = units.push(Unit(pow, 1/*level*/));
 		unitToOwner[id] = msg.sender;
+
+		// イベントログ
+		emit CreateUnit(msg.sender, id, _code, pow);
+
+		return id;
 	}
 
 	// 所持ユニットID取得
@@ -75,12 +81,12 @@ contract UnitFactory
 	}
 
 	// ユニット数取得
-	function getUnitNum() external returns(uint)
+	function getUnitNum() external view returns(uint)
 	{
 		return units.length;
 	}
 
-	function getUnitAddr(uint _unitid) external returns(address)
+	function getUnitAddr(uint _unitid) external view returns(address)
 	{
 		return unitToOwner[_unitid];
 	}
