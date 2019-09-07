@@ -37,7 +37,7 @@ contract UnitFactory
 	}
 
 	// ユニット生成
-	function createUnit(string memory _code) public returns(uint)
+	function createUnit(string memory _code) public
 	{
 		// 所持確認
 		require(!_isExistUnit());
@@ -52,8 +52,6 @@ contract UnitFactory
 
 		// イベントログ
 		emit CreateUnit(msg.sender, id, _code, pow);
-
-		return id;
 	}
 
 	// 所持ユニットID取得
