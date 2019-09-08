@@ -16,6 +16,7 @@
 	<button @click="getUnitnum">getUnitnum</button>
 	<button @click="getUnitOwner">getUnitOwner</button>
 	<button @click="resetUnit">resetUnit</button>
+	<button @click="battle">battle!!</button>
   </div>
 </template>
 
@@ -126,6 +127,20 @@ export default {
 							console.log(ids[0].toNumber())
 							this.unitid = ids[0].toNumber() 
 						}
+					})
+			})
+	  },
+
+	  // 対戦
+	  battle() {
+		if (this.unitid == null) return
+
+		  return UnitFactory.deployed()
+		  	.then((instance) => {
+				instance.battleStartRandom(this.unitid, {from:this.account})
+					.then(() => {
+						console.log("battle success")
+						this.getUnit()
 					})
 			})
 	  },
