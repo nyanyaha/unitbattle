@@ -11,7 +11,7 @@
 	<input v-model="magic_word" type="text" name="" value="" placeholder="魔法の言葉を入力せよ">
 	<button @click="createUnit">召喚！</button>
 	<p>Power:{{power}} Level:{{level}}</p>
-	<button @click="getUnit">getUnit</button>
+	<button @click="displayUnit">getUnit</button>
 	<button @click="getUnitIdByOwner">getUnitIdByOwner</button>
 	<button @click="getUnitnum">getUnitnum</button>
 	<button @click="getUnitOwner">getUnitOwner</button>
@@ -67,13 +67,8 @@ export default {
 				this.account = accounts[0]
 				web3.eth.defaultAccount = this.account
 
-				//UnitFactory.deployed()
-				//	.then((instance) => {
-						//console.error(instance)
-						//instance.createUnit("test",{from:this.account})
-				//		instance.getUnitNum()
-				//			.then(() => this.msg = "create")
-				//	})
+				// 作成済みのユニットがあるか確認
+				this.getUnitIdByOwner()
 			})
 		})
   },
@@ -85,7 +80,7 @@ export default {
 
 		  // 作成済み
 		  if (this.unitid != null) {
-			  return this.getUnit()
+			  return this.displayUnit()
 		  }
 
 		  return UnitFactory.deployed()
@@ -95,21 +90,21 @@ export default {
 						this.msg = "召喚成功！"
 						this.getUnitIdByOwner()
 							.then(() => {
-								this.getUnit()
+								this.displayUnit()
 							})
 					})
 			})
 	  },
 
-	  // ユニット取得
-	  getUnit () {
+	  // ユニット描画
+	  displayUnit () {
 		  if (this.unitid == null) return
 
 		  return UnitFactory.deployed()
 		  	.then((instance) => {
 				instance.units(this.unitid)
 					.then((unit) => {
-						console.log("getUnit success")
+						console.log("display success")
 						this.power= unit.power
 						this.level= unit.level
 					})
@@ -126,6 +121,8 @@ export default {
 						if (ids.length > 0) {
 							console.log(ids[0].toNumber())
 							this.unitid = ids[0].toNumber() 
+							// ユニット取得（描画更新）
+							this.displayUnit()
 						}
 					})
 			})
@@ -140,7 +137,8 @@ export default {
 				instance.battleStartRandom(this.unitid, {from:this.account})
 					.then(() => {
 						console.log("battle success")
-						this.getUnit()
+						// ユニット取得（描画更新）
+						this.displayUnit()
 					})
 			})
 	  },
