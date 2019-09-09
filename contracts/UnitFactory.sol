@@ -11,7 +11,7 @@ contract UnitFactory
 	}
 
 	Unit[] public units;
-	uint constant DEFAULT_POWER_MAX = 999;
+	uint constant DEFAULT_POWER_MAX = 999;		// 生成時の上限、レベルアップで超える
 
 	mapping (uint => address) public unitToOwner;
 
@@ -24,13 +24,13 @@ contract UnitFactory
 		_;
 	}
 	
-	// 乱数取得
+	// 0〜_modulusまでの乱数取得
 	function randMod(uint _nonce, uint _modulus) internal view returns(uint)
 	{
 		return uint(keccak256(abi.encodePacked(now, msg.sender, _nonce))) % _modulus;
 	}
 
-	// 既にユニットを所持しているか
+	// 呼び出し元アドレスが既にユニットを所持しているか
 	function _isExistUnit() internal view returns(bool)
 	{
 		for( uint i = 0; i < units.length; ++i )
@@ -44,7 +44,7 @@ contract UnitFactory
 		return false;
 	}
 
-	// ユニット生成
+	// _codeからpowerをランダムにユニット生成
 	function createUnit(string memory _code) public
 	{
 		// 所持確認
@@ -62,7 +62,7 @@ contract UnitFactory
 		emit CreateUnit(msg.sender, id, _code, pow);
 	}
 
-	// 所持ユニットID取得
+	// 指定アドレスの所持ユニットID取得
 	function getUnitIdByOwner(address _owner) external view returns(uint[] memory)
 	{
 		for( uint i = 0; i < units.length; ++i )
@@ -75,7 +75,7 @@ contract UnitFactory
 			}
 		}
 		
-		// ないので空で返す
+		// uintで−１が使用できないのでない場合は空で返す
 		uint[] memory result = new uint[](0);
 		return result;
 	}
@@ -87,7 +87,7 @@ contract UnitFactory
 		unitToOwner[_unitid] = address(0x0);
 	}
 
-	// ユニット数取得
+	// 全体のユニット数取得
 	function getUnitNum() external view returns(uint)
 	{
 		return units.length;
@@ -99,7 +99,7 @@ contract UnitFactory
 		Unit storage my_unit = units[_unitid];
 		Unit memory opponent;
 
-		// 対戦相手選択
+		// 対戦相手選択、登録ユニットからランダムor簡易生成
 		uint units_length = units.length;
 		if( units_length <= 1 )
 		{
