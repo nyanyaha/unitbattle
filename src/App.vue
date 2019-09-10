@@ -1,16 +1,8 @@
 <template>
   <div id="app">
-    <h1>{{ msg }}</h1>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h1>好きな呪文を入力してユニットを召喚</h1>
-	<input v-model="magic_word" type="text" name="" value="" placeholder="魔法の言葉を入力せよ">
-	<button @click="createUnit">召喚！</button>
-	<p>Power:{{power}} Level:{{level}}</p>
+  	<CreatePage @create="createUnit" :power='power' :level='level'></CreatePage>
+  	<InfoPage @create="createUnit" :power='power' :level='level'></InfoPage>
+
 	<button @click="displayUnit">getUnit</button>
 	<button @click="getUnitIdByOwner">getUnitIdByOwner</button>
 	<button @click="getUnitnum">getUnitnum</button>
@@ -25,6 +17,8 @@ import Web3 from 'web3'
 import contract from 'truffle-contract'
 import artifacts from '../build/contracts/UnitFactory.json'
 const UnitFactory = contract(artifacts)
+import CreatePage from './Create.vue'
+import InfoPage from './Info.vue'
 export default {
   name: 'app',
   data () {
@@ -36,6 +30,10 @@ export default {
 	  power : 0,
 	  level : 0
     }
+  },
+  components: {
+	  CreatePage,
+	  InfoPage
   },
 
   // 初期化処理
@@ -73,10 +71,11 @@ export default {
 		})
   },
 
+  // contract呼び出し関連
   methods: {
 	  // ユニット生成
-	  createUnit () {
-		  if (this.magic_word == null) return
+	  createUnit (magic_word) {
+		  if (magic_word == null) return
 
 		  // 作成済み
 		  if (this.unitid != null) {
@@ -85,8 +84,9 @@ export default {
 
 		  return UnitFactory.deployed()
 		  	.then((instance) => {
-				instance.createUnit(this.magic_word, {from:this.account})
+				instance.createUnit(magic_word, {from:this.account})
 					.then(() => {
+						console.log(magic_word)
 						this.msg = "召喚成功！"
 						this.getUnitIdByOwner()
 							.then(() => {
@@ -175,6 +175,7 @@ export default {
 	  }
   }
 }
+
 </script>
 
 <style lang="scss">
@@ -203,5 +204,17 @@ li {
 
 a {
   color: #42b983;
+}
+
+input {
+	width:300px;
+	height:30px;
+	font-size:16px;
+}
+
+button.create {
+	width:65px;
+	height:30px;
+	font-size:16px;
 }
 </style>
