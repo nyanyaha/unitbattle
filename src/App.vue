@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-  	<CreatePage @create="createUnit" :power='power' :level='level'></CreatePage>
-  	<InfoPage @create="createUnit" :power='power' :level='level'></InfoPage>
-
+  	<component :is="current_page" @create="createUnit" @battle="battle" @reset="resetUnit" :power='power' :level='level'></component>
 	<button @click="displayUnit">getUnit</button>
 	<button @click="getUnitIdByOwner">getUnitIdByOwner</button>
 	<button @click="getUnitnum">getUnitnum</button>
@@ -28,7 +26,8 @@ export default {
 	  unitid : null,
   	  magic_word : null,
 	  power : 0,
-	  level : 0
+	  level : 0,
+	  current_page : 'CreatePage',
     }
   },
   components: {
@@ -121,6 +120,7 @@ export default {
 						if (ids.length > 0) {
 							console.log(ids[0].toNumber())
 							this.unitid = ids[0].toNumber() 
+							this.current_page = 'InfoPage'
 							// ユニット取得（描画更新）
 							this.displayUnit()
 						}
@@ -169,6 +169,7 @@ export default {
 				instance.resetUnit(this.unitid, {from:this.account})
 					.then(() => {
 						this.unitid = null
+						this.current_page = 'CreatePage' 
 						console.log("reset success")
 					})
 			})
