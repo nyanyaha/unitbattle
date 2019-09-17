@@ -7,6 +7,7 @@
 solidity ^0.5.8  
 Truffle v5.0.34  
 Ganache v2.1.0  
+  
 ブラウザCLを使用する場合  
 Vue.js 2.9.6  
 MetaMask 7.1.1  
