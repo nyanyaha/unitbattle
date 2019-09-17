@@ -16,7 +16,7 @@ truffle-contract
 
 ## セットアップ（macOS）
 - Ganacheのインストール  
-公式サイトから任意OSのソフトをインストールして起動してください
+公式サイトから任意OSのソフトをインストールして起動してください  
 https://www.trufflesuite.com/ganache  
   
 - Truffle周りのインストールと実行
