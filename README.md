@@ -7,14 +7,20 @@
 solidity ^0.5.8  
 Truffle v5.0.34  
 Ganache v2.1.0  
-Vue.js 2.9.6（ブラウザCLを使用する場合）
+-ブラウザCLを使用する場合
+Vue.js 2.9.6
+MetaMask 7.1.1
+web3
+truffle-contract
 
-
-## Build Setup
+## セットアップ（macOS）
 
 ``` bash
-# install dependencies
-npm install
+# install npm
+brew install npm
+
+# Truffle
+npm install -g truffle
 
 # serve with hot reload at localhost:8080
 npm run dev
@@ -23,4 +29,15 @@ npm run dev
 npm run build
 ```
 
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+``` bash
+# vue環境 install
+npm install vue
+npm install --global vue-cli
+npm install web3
+npm install truffle-contract
+
+# 実行
+npm run dev
+# localhost:8080にブラウザでアクセス
+```
+
