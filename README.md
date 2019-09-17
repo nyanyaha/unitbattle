@@ -7,14 +7,18 @@
 solidity ^0.5.8  
 Truffle v5.0.34  
 Ganache v2.1.0  
--ブラウザCLを使用する場合
-Vue.js 2.9.6
-MetaMask 7.1.1
-web3
+- ブラウザCLを使用する場合  
+Vue.js 2.9.6  
+MetaMask 7.1.1  
+web3  
 truffle-contract
 
 ## セットアップ（macOS）
-
+- Ganacheのインストール  
+公式サイトから任意OSのソフトをインストールして起動してください
+https://www.trufflesuite.com/ganache  
+  
+- Truffle周りのインストールと実行
 ``` bash
 # install npm
 brew install npm
@@ -22,13 +26,25 @@ brew install npm
 # Truffle
 npm install -g truffle
 
-# serve with hot reload at localhost:8080
-npm run dev
+# 設定
+# truffle.jsを最適な値に調整します
 
-# build for production with minification
-npm run build
+# コンパイル
+truffle compile
+
+# ブロックチェーン上へのデプロイ
+truffle migrate
+
+# テスト実行
+truffle test test/testUnitFactory.sol
 ```
 
+### ブラウザCLを使用する場合
+- MetaMaskのインストール  
+GoogleChromeの場合はChromeストアにMetaMaskのプラグインがあるので有効にしてください  
+
+
+- ブラウザCLのインストールと実行
 ``` bash
 # vue環境 install
 npm install vue
