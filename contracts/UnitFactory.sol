@@ -15,7 +15,10 @@ contract UnitFactory
 
 	mapping (uint => address) public unitToOwner;
 
+	// ユニット作成時のイベント
 	event CreateUnit(address addr, uint unitid, string code, uint32 power);
+	// バトルの勝敗判定用イベント
+	event BattleResult(address addr, uint from_power, uint32 from_level, uint32 power, uint32 to_level, bool is_win);
 
 	// 所有者判定
 	modifier onlyOwnerOf(uint _unitid)
@@ -114,13 +117,22 @@ contract UnitFactory
 			opponent = units[rand_idx];
 		}
 
+		// イベント発行のために戦闘前の情報を残しておく
+		bool is_win = false;
+		uint32 power_log = my_unit.power;
+		uint32 level_log = my_unit.level;
+
 		// 戦闘（ひとまずpower値で比較）
 		if( my_unit.power >= opponent.power )
 		{
 			// 勝利したらレベルを上げてpowerに１〜１００加算
 			my_unit.power += uint32(randMod(my_unit.power, 100)) + 1; 
 			my_unit.level++;
+			is_win = true;
 		}
+
+		// 勝敗表示のためにイベント発行
+		emit BattleResult(msg.sender, power_log, level_log, opponent.power, opponent.level, is_win);
 	}
 
 	function getUnitAddr(uint _unitid) external view returns(address)
