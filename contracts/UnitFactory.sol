@@ -18,7 +18,7 @@ contract UnitFactory
 	// ユニット作成時のイベント
 	event CreateUnit(address addr, uint unitid, string code, uint32 power);
 	// バトルの勝敗判定用イベント
-	event BattleResult(address addr, uint from_power, uint32 from_level, uint32 to_power, uint32 to_level, bool is_win);
+	event BattleResult(address addr, uint32 from_power, uint32 from_level, uint32 to_power, uint32 to_level, bool is_win);
 
 	// 所有者判定
 	modifier onlyOwnerOf(uint _unitid)
