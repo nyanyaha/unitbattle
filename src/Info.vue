@@ -3,8 +3,8 @@
 	<h1>召喚獣ステータス</h1>
 	<p>Power:{{power}} Level:{{level}}</p>
 	<button class="battle" @click="$emit('battle')">ランダム対戦</button><br><br>
-	<button class="reset" @click="$emit('reset')">作り直す...</button>
-
+	<button class="reset" @click="$emit('reset')">作り直す...</button><br>
+	<h2>対戦結果：{{result}}</h2>
   </div>
 </template>
 
@@ -12,7 +12,8 @@
 export default {
   props:{
 	  power: Object,
-	  level: Object 
+	  level: Object, 
+	  result: String
   }
 }
 </script>

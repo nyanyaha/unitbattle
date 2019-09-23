@@ -1,10 +1,8 @@
 <template>
   <div id="app">
-  	<component :is="current_page" @create="createUnit" @battle="battle" @reset="resetUnit" :power='power' :level='level'></component>
+  	<component :is="current_page" @create="createUnit" @battle="battle" @reset="resetUnit" :power="power" :level="level" :result="result"></component>
 	<button @click="displayUnit">getUnit</button>
 	<button @click="getUnitIdByOwner">getUnitIdByOwner</button>
-	<button @click="getUnitnum">getUnitnum</button>
-	<button @click="getUnitOwner">getUnitOwner</button>
 	<button @click="resetUnit">resetUnit</button>
 	<button @click="battle">battle!!</button>
   </div>
@@ -27,6 +25,7 @@ export default {
   	  magic_word : null,
 	  power : 0,
 	  level : 0,
+	  result : null,
 	  current_page : 'CreatePage',
     }
   },
@@ -104,8 +103,12 @@ export default {
 				instance.units(this.unitid)
 					.then((unit) => {
 						console.log("display success")
-						this.power= unit.power
-						this.level= unit.level
+						if (this.level != 0)
+						{
+							this.result = (this.level < unit.level) ? "勝利！" : "敗北..."
+						}
+						this.power = unit.power
+						this.level = unit.level
 					})
 			})
 	  },
@@ -143,32 +146,16 @@ export default {
 			})
 	  },
 
-	  getUnitnum () {
-		  return UnitFactory.deployed()
-		  	.then((instance) => {
-				instance.getUnitNum({from:this.account})
-					.then((num) => {
-						console.log(num.toNumber())
-					})
-			})
-	  },
-
-	  getUnitOwner () {
-		  return UnitFactory.deployed()
-		  	.then((instance) => {
-				instance.unitToOwner(0)
-					.then((unit) => {
-						console.log(unit)
-					})
-			})
-	  },
-
+	  // ユニットの削除
 	  resetUnit () {
 		  return UnitFactory.deployed()
 		  	.then((instance) => {
 				instance.resetUnit(this.unitid, {from:this.account})
 					.then(() => {
 						this.unitid = null
+						this.power = 0
+						this.level = 0
+						this.result = null
 						this.current_page = 'CreatePage' 
 						console.log("reset success")
 					})
