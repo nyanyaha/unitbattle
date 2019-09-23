@@ -1,10 +1,6 @@
 <template>
   <div id="app">
   	<component :is="current_page" @create="createUnit" @battle="battle" @reset="resetUnit" :power="power" :level="level" :result="result"></component>
-	<button @click="displayUnit">getUnit</button>
-	<button @click="getUnitIdByOwner">getUnitIdByOwner</button>
-	<button @click="resetUnit">resetUnit</button>
-	<button @click="battle">battle!!</button>
   </div>
 </template>
 
